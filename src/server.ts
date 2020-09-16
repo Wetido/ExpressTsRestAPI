@@ -1,8 +1,19 @@
-import app from './app';
+import App from './app';
+import config from './ormconfig';
+import { createConnection } from 'typeorm';
+import PostController from './controllers/postController';
 
-const server = app.listen(app.get("port"), () => {
-
-    console.log("Aplikacja dziala");
-})
-
-export default server;
+(async () => {
+  try {
+    await createConnection(config);
+  } catch (error) {
+    console.log('Error while connecting to the database', error);
+    return error;
+  }
+  const app = new App(
+    [
+      new PostController(),
+    ],
+  );
+  app.listen();
+})();
